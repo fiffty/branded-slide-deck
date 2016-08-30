@@ -4,16 +4,17 @@ import styles from '../styles/slide'
 
 class Slide extends Component {
 	render() {
-		const {title, columns, background, companyName, pageNum, isCurrentSlide} = this.props;
+		const {title, columns, background, companyName, pageNum, isCurrentSlide, inSidebar} = this.props;
 		const backgroundStyles = {
 			color: (background.type === 'light') ? '#2B95FD' : '#FFFFFF',
 			background: (background.backgroundImage) ? background.backgroundImage : background.backgroundColor
 		}
 		const visibilityStyles = {
-			visibility: (isCurrentSlide)? 'visible' : 'hidden'
+			visibility: (!isCurrentSlide && !inSidebar)? 'hidden' : 'visible'
 		}
+		const slideStyle = (inSidebar) ? styles.sidebarSlide : styles.slide
 		return (
-			<div style={Object.assign({}, styles.slide, backgroundStyles, visibilityStyles)}>
+			<div style={Object.assign({}, slideStyle, backgroundStyles, visibilityStyles)}>
 				{((background.type === 'dark') && background.backgroundImage) ? <div style={styles.overlay}></div> : null}
 
 				<div style={styles.title}>{title}</div>

@@ -102,4 +102,8 @@ const slides = [{
 	}
 }];
 
-render(<BrandedSlideDeck slides={slides} companyName={'BrainStation Inc'} />, document.getElementById('app'))
+render(<BrandedSlideDeck 
+	slides={slides} 
+	companyName={'BrainStation Inc'} 
+	showSidebar={true}
+	canResize={true} />, document.getElementById('app'))

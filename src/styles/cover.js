@@ -5,13 +5,21 @@ export default {
 		position: 'absolute',
 		top: 0,
 		left: 0,
-		border: '1px solid #CCC',
 		overflow: 'auto',
 		padding: '0 30px'
 	},
+	sidebarSlide: {
+		width: 700,
+		height: 400,
+		overflow: 'auto',
+		padding: '0 30px',
+		border: '5px solid #CCC'
+	},
 	section: {
-		width: '100%',
+		width: 'calc(100% + 60px)',
+		margin: '0 -30px',
 		height: '50%',
+		backgroundColor: '#FFFFFF',
 		backgroundSize: 'cover',
 		backgroundPosition: 'center center',
 		position: 'relative'

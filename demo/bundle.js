@@ -158,7 +158,11 @@
 		}
 	}];
 
-	(0, _reactDom.render)(_react2.default.createElement(_BrandedSlideDeck2.default, { slides: slides, companyName: 'BrainStation Inc' }), document.getElementById('app'));
+	(0, _reactDom.render)(_react2.default.createElement(_BrandedSlideDeck2.default, {
+		slides: slides,
+		companyName: 'BrainStation Inc',
+		showSidebar: true,
+		canResize: true }), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -21527,8 +21531,6 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(34);
-
 	var _Slides = __webpack_require__(173);
 
 	var _Slides2 = _interopRequireDefault(_Slides);
@@ -21536,6 +21538,14 @@
 	var _Controls = __webpack_require__(181);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
+
+	var _Sidebar = __webpack_require__(184);
+
+	var _Sidebar2 = _interopRequireDefault(_Sidebar);
+
+	var _brandedslidedeck = __webpack_require__(183);
+
+	var _brandedslidedeck2 = _interopRequireDefault(_brandedslidedeck);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21592,22 +21602,47 @@
 				var _props = this.props;
 				var slides = _props.slides;
 				var companyName = _props.companyName;
+				var showSidebar = _props.showSidebar;
+				var canResize = _props.canResize;
 				var _state = this.state;
 				var currentSlide = _state.currentSlide;
 				var hovered = _state.hovered;
 
+				var slidesContainerWidth = {
+					width: showSidebar ? '80%' : null,
+					left: showSidebar ? '20%' : 0
+				};
 				return _react2.default.createElement(
 					'div',
-					{
-						style: { width: '100%', position: 'relative', overflow: 'hidden' },
-						onMouseEnter: this.handleMouseEnter,
-						onMouseLeave: this.handleMouseLeave },
-					_react2.default.createElement(_Slides2.default, { slides: slides, currentSlide: currentSlide, companyName: companyName }),
-					_react2.default.createElement(_Controls2.default, {
-						currentSlide: currentSlide,
-						numberOfSlides: slides.length,
-						goToSlide: this.goToSlide,
-						hovered: hovered })
+					{ style: _brandedslidedeck2.default.mainContainer },
+					showSidebar ? _react2.default.createElement(
+						_Sidebar2.default,
+						{ canResize: canResize },
+						_react2.default.createElement(_Slides2.default, {
+							canResize: canResize,
+							slides: slides,
+							currentSlide: currentSlide,
+							companyName: companyName,
+							inSidebar: true,
+							goToSlide: this.goToSlide })
+					) : null,
+					_react2.default.createElement(
+						'div',
+						{
+							style: Object.assign({}, _brandedslidedeck2.default.slidesContainer, slidesContainerWidth),
+							onMouseEnter: this.handleMouseEnter,
+							onMouseLeave: this.handleMouseLeave },
+						_react2.default.createElement(_Slides2.default, {
+							canResize: canResize,
+							slides: slides,
+							currentSlide: currentSlide,
+							companyName: companyName }),
+						_react2.default.createElement(_Controls2.default, {
+							currentSlide: currentSlide,
+							numberOfSlides: slides.length,
+							goToSlide: this.goToSlide,
+							hovered: hovered })
+					)
 				);
 			}
 		}]);
@@ -21684,7 +21719,9 @@
 			key: 'componentDidMount',
 			value: function componentDidMount() {
 				this.adjustContainerWidth();
-				window.addEventListener('resize', this.adjustContainerWidth);
+				if (this.props.canResize) {
+					window.addEventListener('resize', this.adjustContainerWidth);
+				}
 			}
 		}, {
 			key: 'componentWillUnmount',
@@ -21698,35 +21735,84 @@
 				var slides = _props.slides;
 				var companyName = _props.companyName;
 				var currentSlide = _props.currentSlide;
+				var inSidebar = _props.inSidebar;
+				var goToSlide = _props.goToSlide;
 
-				return _react2.default.createElement(
-					'div',
-					{ style: _slides2.default.container },
-					_react2.default.createElement(
-						'div',
-						{ ref: 'slides', style: Object.assign({}, _slides2.default.slides, this.state.adjustContainerWidth) },
-						slides.map(function (slide, i) {
-							if (slide.cover) {
-								return _react2.default.createElement(_Cover2.default, {
+				var slidesJsx = void 0;
+
+				if (inSidebar) {
+					slidesJsx = slides.map(function (slide, i) {
+						if (slide.cover) {
+							return _react2.default.createElement(
+								'div',
+								{
 									key: 'slide-' + i,
+									style: _slides2.default.sidebarSlide,
+									onClick: function onClick() {
+										goToSlide(i);
+									} },
+								_react2.default.createElement(_Cover2.default, {
 									title: slide.cover.title,
 									subtitle: slide.cover.subtitle,
 									logo: slide.cover.logo,
 									backgroundImage: slide.cover.backgroundImage,
 									companyName: companyName,
 									pageNum: i + 1,
-									isCurrentSlide: currentSlide === i });
-							} else {
-								return _react2.default.createElement(_Slide2.default, {
+									isCurrentSlide: currentSlide === i,
+									inSidebar: inSidebar })
+							);
+						} else {
+							return _react2.default.createElement(
+								'div',
+								{
 									key: 'slide-' + i,
+									style: _slides2.default.sidebarSlide,
+									onClick: function onClick() {
+										goToSlide(i);
+									} },
+								_react2.default.createElement(_Slide2.default, {
 									title: slide.title,
 									columns: slide.columns,
 									background: slide.background,
 									companyName: companyName,
 									pageNum: i + 1,
-									isCurrentSlide: currentSlide === i });
-							}
-						})
+									isCurrentSlide: currentSlide === i,
+									inSidebar: inSidebar })
+							);
+						}
+					});
+				} else {
+					slidesJsx = slides.map(function (slide, i) {
+						if (slide.cover) {
+							return _react2.default.createElement(_Cover2.default, {
+								key: 'slide-' + i,
+								title: slide.cover.title,
+								subtitle: slide.cover.subtitle,
+								logo: slide.cover.logo,
+								backgroundImage: slide.cover.backgroundImage,
+								companyName: companyName,
+								pageNum: i + 1,
+								isCurrentSlide: currentSlide === i });
+						} else {
+							return _react2.default.createElement(_Slide2.default, {
+								key: 'slide-' + i,
+								title: slide.title,
+								columns: slide.columns,
+								background: slide.background,
+								companyName: companyName,
+								pageNum: i + 1,
+								isCurrentSlide: currentSlide === i });
+						}
+					});
+				}
+
+				return _react2.default.createElement(
+					'div',
+					{ style: inSidebar ? _slides2.default.sidebarContainer : _slides2.default.container },
+					_react2.default.createElement(
+						'div',
+						{ ref: 'slides', style: Object.assign({}, _slides2.default.slides, this.state.adjustContainerWidth) },
+						slidesJsx
 					)
 				);
 			}
@@ -21784,15 +21870,19 @@
 				var backgroundImage = _props.backgroundImage;
 				var companyName = _props.companyName;
 				var pageNum = _props.pageNum;
+				var isCurrentSlide = _props.isCurrentSlide;
+				var inSidebar = _props.inSidebar;
 
 				var backgroundStyle = {
-					backgroundImage: backgroundImage,
-					width: 'calc(100% + 60px)',
-					margin: '0 -30px'
+					backgroundImage: backgroundImage
 				};
+				var visibilityStyles = {
+					visibility: !isCurrentSlide && !inSidebar ? 'hidden' : 'visible'
+				};
+				var slideStyle = inSidebar ? _cover2.default.sidebarSlide : _cover2.default.slide;
 				return _react2.default.createElement(
 					'div',
-					{ style: _cover2.default.slide },
+					{ style: Object.assign({}, slideStyle, visibilityStyles) },
 					_react2.default.createElement(
 						'div',
 						{ style: Object.assign({}, _cover2.default.section, backgroundStyle) },
@@ -21847,13 +21937,21 @@
 			position: 'absolute',
 			top: 0,
 			left: 0,
-			border: '1px solid #CCC',
 			overflow: 'auto',
 			padding: '0 30px'
 		},
+		sidebarSlide: {
+			width: 700,
+			height: 400,
+			overflow: 'auto',
+			padding: '0 30px',
+			border: '5px solid #CCC'
+		},
 		section: {
-			width: '100%',
+			width: 'calc(100% + 60px)',
+			margin: '0 -30px',
 			height: '50%',
+			backgroundColor: '#FFFFFF',
 			backgroundSize: 'cover',
 			backgroundPosition: 'center center',
 			position: 'relative'
@@ -21945,17 +22043,19 @@
 				var companyName = _props.companyName;
 				var pageNum = _props.pageNum;
 				var isCurrentSlide = _props.isCurrentSlide;
+				var inSidebar = _props.inSidebar;
 
 				var backgroundStyles = {
 					color: background.type === 'light' ? '#2B95FD' : '#FFFFFF',
 					background: background.backgroundImage ? background.backgroundImage : background.backgroundColor
 				};
 				var visibilityStyles = {
-					visibility: isCurrentSlide ? 'visible' : 'hidden'
+					visibility: !isCurrentSlide && !inSidebar ? 'hidden' : 'visible'
 				};
+				var slideStyle = inSidebar ? _slide2.default.sidebarSlide : _slide2.default.slide;
 				return _react2.default.createElement(
 					'div',
-					{ style: Object.assign({}, _slide2.default.slide, backgroundStyles, visibilityStyles) },
+					{ style: Object.assign({}, slideStyle, backgroundStyles, visibilityStyles) },
 					background.type === 'dark' && background.backgroundImage ? _react2.default.createElement('div', { style: _slide2.default.overlay }) : null,
 					_react2.default.createElement(
 						'div',
@@ -22160,9 +22260,15 @@
 			position: 'absolute',
 			top: 0,
 			left: 0,
-			border: '1px solid #CCC',
 			overflow: 'auto',
 			padding: '0 30px'
+		},
+		sidebarSlide: {
+			width: 700,
+			height: 400,
+			overflow: 'auto',
+			padding: '0 30px',
+			border: '5px solid #CCC'
 		},
 		title: {
 			position: 'absolute',
@@ -22203,12 +22309,22 @@
 	});
 	exports.default = {
 		slides: {},
+		sidebarSlide: {
+			position: 'relative',
+			width: '100%',
+			marginBottom: 50,
+			cursor: 'pointer'
+		},
 		container: {
 			width: '100%',
 			height: 0,
 			paddingBottom: '57.14%',
 			position: 'relative',
 			overflow: 'hidden'
+		},
+		sidebarContainer: {
+			width: '100%',
+			position: 'relative'
 		}
 	};
 
@@ -22370,6 +22486,162 @@
 		input: {
 			fontSize: 12,
 			fontWeight: 300
+		}
+	};
+
+/***/ },
+/* 183 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = {
+		mainContainer: {
+			width: '100%',
+			position: 'relative',
+			border: '1px solid #CCC'
+		},
+		slidesContainer: {
+			width: '100%',
+			position: 'relative',
+			overflow: 'hidden'
+		}
+	};
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Slides = __webpack_require__(173);
+
+	var _Slides2 = _interopRequireDefault(_Slides);
+
+	var _sidebar = __webpack_require__(185);
+
+	var _sidebar2 = _interopRequireDefault(_sidebar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Sidebar = function (_Component) {
+		_inherits(Sidebar, _Component);
+
+		function Sidebar() {
+			_classCallCheck(this, Sidebar);
+
+			var _this = _possibleConstructorReturn(this, (Sidebar.__proto__ || Object.getPrototypeOf(Sidebar)).call(this));
+
+			_this.state = {
+				mainContainerHeight: {
+					height: 0
+				},
+				innerContainerHeight: {
+					height: 0
+				}
+			};
+
+			_this.adjustContainerHeight = function () {
+				var parentHeight = _this.refs.mainContainer.parentNode.clientHeight;
+				_this.setState({
+					mainContainerHeight: {
+						height: parentHeight
+					}
+				});
+			};
+
+			_this.adjustInnerContainerHeight = function (numberOfSlides) {
+				var selfHeight = _this.refs.innerContainer.clientWidth * 0.6 * numberOfSlides;
+				_this.setState({
+					innerContainerHeight: {
+						height: selfHeight
+					}
+				});
+			};
+			return _this;
+		}
+
+		_createClass(Sidebar, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.adjustContainerHeight();
+				this.adjustInnerContainerHeight(this.props.children.props.slides.length);
+				if (this.props.canResize) {
+					window.addEventListener('resize', this.adjustContainerHeight);
+				}
+			}
+		}, {
+			key: 'componentWillUnmount',
+			value: function componentWillUnmount() {
+				window.removeEventListener('resize', this.adjustContainerHeight);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var children = this.props.children;
+
+				return _react2.default.createElement(
+					'div',
+					{
+						ref: 'mainContainer',
+						style: Object.assign({}, _sidebar2.default.mainContainer, this.state.mainContainerHeight) },
+					_react2.default.createElement(
+						'div',
+						{
+							ref: 'innerContainer',
+							style: Object.assign({}, _sidebar2.default.innerContainer, this.state.innerContainerHeight) },
+						children
+					)
+				);
+			}
+		}]);
+
+		return Sidebar;
+	}(_react.Component);
+
+	exports.default = Sidebar;
+
+/***/ },
+/* 185 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = {
+		mainContainer: {
+			position: 'absolute',
+			top: 0,
+			left: 0,
+			width: '20%',
+			backgroundColor: '#EEEEEE',
+			overflow: 'scroll'
+		},
+		innerContainer: {
+			width: '100%',
+			padding: 10,
+			overflow: 'hidden'
 		}
 	};
 

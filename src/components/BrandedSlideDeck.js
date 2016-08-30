@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
-import {render} from 'react-dom'
 import Slides from './Slides'
 import Controls from './Controls'
+import Sidebar from './Sidebar'
+import styles from '../styles/brandedslidedeck'
 
 class BrandedSlideDeck extends Component {
 	constructor() {
@@ -32,19 +33,40 @@ class BrandedSlideDeck extends Component {
 		})
 	}
 	render() {
-		const {slides, companyName} = this.props
+		const {slides, companyName, showSidebar, canResize} = this.props
 		const {currentSlide, hovered} = this.state
+		const slidesContainerWidth = {
+			width: (showSidebar) ? '80%' : null,
+			left: (showSidebar) ? '20%' : 0
+		}
 		return (
-			<div 
-				style={{width: '100%', position: 'relative', overflow: 'hidden'}}
-				onMouseEnter={this.handleMouseEnter}
-				onMouseLeave={this.handleMouseLeave}>
-				<Slides slides={slides} currentSlide={currentSlide} companyName={companyName}/>
-				<Controls 
-					currentSlide={currentSlide} 
-					numberOfSlides={slides.length} 
-					goToSlide={this.goToSlide}
-					hovered={hovered} />
+			<div style={styles.mainContainer}>
+				{(showSidebar) ? 
+					<Sidebar canResize={canResize}>
+						<Slides 
+							canResize={canResize}
+							slides={slides} 
+							currentSlide={currentSlide} 
+							companyName={companyName}
+							inSidebar={true}
+							goToSlide={this.goToSlide} />
+					</Sidebar> 
+				: null}
+				<div 
+					style={Object.assign({}, styles.slidesContainer, slidesContainerWidth)}
+					onMouseEnter={this.handleMouseEnter}
+					onMouseLeave={this.handleMouseLeave}>
+					<Slides 
+						canResize={canResize}
+						slides={slides} 
+						currentSlide={currentSlide} 
+						companyName={companyName} />
+					<Controls 
+						currentSlide={currentSlide} 
+						numberOfSlides={slides.length} 
+						goToSlide={this.goToSlide}
+						hovered={hovered} />
+				</div>
 			</div>
 		)
 	}

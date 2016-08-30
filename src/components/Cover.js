@@ -3,14 +3,16 @@ import styles from '../styles/cover'
 
 class Cover extends Component {
 	render() {
-		const {title, subtitle, logo, backgroundImage, companyName, pageNum} = this.props;
+		const {title, subtitle, logo, backgroundImage, companyName, pageNum, isCurrentSlide, inSidebar} = this.props;
 		const backgroundStyle = {
-			backgroundImage: backgroundImage,
-			width: 'calc(100% + 60px)',
-			margin: '0 -30px'
+			backgroundImage: backgroundImage
 		}
+		const visibilityStyles = {
+			visibility: (!isCurrentSlide && !inSidebar)? 'hidden' : 'visible'
+		}
+		const slideStyle = (inSidebar) ? styles.sidebarSlide : styles.slide
 		return (
-			<div style={styles.slide}>
+			<div style={Object.assign({}, slideStyle, visibilityStyles)}>
 				<div style={Object.assign({}, styles.section, backgroundStyle)}>
 					<div style={styles.overlay}></div>
 					<img style={styles.logo} src={logo} />

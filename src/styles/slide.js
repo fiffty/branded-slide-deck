@@ -5,9 +5,15 @@ export default {
 		position: 'absolute',
 		top: 0,
 		left: 0,
-		border: '1px solid #CCC',
 		overflow: 'auto',
 		padding: '0 30px'
+	},
+	sidebarSlide: {
+		width: 700,
+		height: 400,
+		overflow: 'auto',
+		padding: '0 30px',
+		border: '5px solid #CCC'
 	},
 	title: {
 		position: 'absolute',
