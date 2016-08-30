@@ -21634,7 +21634,6 @@
 			key: 'render',
 			value: function render() {
 				var _props = this.props;
-				var slides = _props.slides;
 				var companyName = _props.companyName;
 				var canResize = _props.canResize;
 				var _state = this.state;
@@ -21646,6 +21645,30 @@
 					width: showSidebar ? '80%' : null,
 					left: showSidebar ? '20%' : 0
 				};
+
+				var slides = this.props.slides;
+				if (!slides || slides.length === 0) {
+					slides = [{
+						columns: [{
+							size: 12,
+							elems: [{
+								tag: 'span',
+								type: 'kindabig',
+								content: 'Hello World'
+							}, {
+								tag: 'span',
+								type: 'kindasmall',
+								content: 'let\'s create a great deck'
+							}]
+						}],
+						background: {
+							type: 'light',
+							backgroundColor: '#FFFFFF',
+							backgroundImage: undefined
+						}
+					}];
+				}
+
 				return _react2.default.createElement(
 					'div',
 					{ ref: 'brandedslidedeck', style: _brandedslidedeck2.default.mainContainer },
@@ -21791,6 +21814,7 @@
 									title: slide.cover.title,
 									subtitle: slide.cover.subtitle,
 									logo: slide.cover.logo,
+									backgroundColor: slide.cover.backgroundColor,
 									backgroundImage: slide.cover.backgroundImage,
 									companyName: companyName,
 									pageNum: i + 1,
@@ -21903,6 +21927,7 @@
 				var title = _props.title;
 				var subtitle = _props.subtitle;
 				var logo = _props.logo;
+				var backgroundColor = _props.backgroundColor;
 				var backgroundImage = _props.backgroundImage;
 				var companyName = _props.companyName;
 				var pageNum = _props.pageNum;
@@ -21910,6 +21935,7 @@
 				var inSidebar = _props.inSidebar;
 
 				var backgroundStyle = {
+					backgroundColor: backgroundColor,
 					backgroundImage: backgroundImage
 				};
 				var visibilityStyles = {
@@ -21923,7 +21949,7 @@
 						'div',
 						{ style: Object.assign({}, _cover2.default.section, backgroundStyle) },
 						_react2.default.createElement('div', { style: _cover2.default.overlay }),
-						_react2.default.createElement('img', { style: _cover2.default.logo, src: logo })
+						logo ? _react2.default.createElement('img', { style: _cover2.default.logo, src: logo }) : null
 					),
 					_react2.default.createElement(
 						'div',

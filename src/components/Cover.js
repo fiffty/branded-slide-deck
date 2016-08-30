@@ -3,8 +3,9 @@ import styles from '../styles/cover'
 
 class Cover extends Component {
 	render() {
-		const {title, subtitle, logo, backgroundImage, companyName, pageNum, isCurrentSlide, inSidebar} = this.props;
+		const {title, subtitle, logo, backgroundColor, backgroundImage, companyName, pageNum, isCurrentSlide, inSidebar} = this.props;
 		const backgroundStyle = {
+			backgroundColor: backgroundColor,
 			backgroundImage: backgroundImage
 		}
 		const visibilityStyles = {
@@ -15,7 +16,7 @@ class Cover extends Component {
 			<div style={Object.assign({}, slideStyle, visibilityStyles)}>
 				<div style={Object.assign({}, styles.section, backgroundStyle)}>
 					<div style={styles.overlay}></div>
-					<img style={styles.logo} src={logo} />
+					{(logo) ? <img style={styles.logo} src={logo} /> : null}
 				</div>
 
 				<div style={styles.section}>

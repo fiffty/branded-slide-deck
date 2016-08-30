@@ -61,12 +61,36 @@ class BrandedSlideDeck extends Component {
 		}
 	}
 	render() {
-		const {slides, companyName, canResize} = this.props
+		const {companyName, canResize} = this.props
 		const {currentSlide, showSidebar, hovered} = this.state
 		const slidesContainerWidth = {
 			width: (showSidebar) ? '80%' : null,
 			left: (showSidebar) ? '20%' : 0
 		}
+
+		let slides = this.props.slides
+		if (!slides || slides.length === 0) {
+			slides = [{
+				columns: [{
+					size: 12,
+					elems: [{
+						tag: 'span',
+						type: 'kindabig',
+						content: 'Hello World'
+					}, {
+						tag: 'span',
+						type: 'kindasmall',
+						content: 'let\'s create a great deck'				
+					}]
+				}],		
+				background: {
+					type: 'light',
+					backgroundColor: '#FFFFFF',
+					backgroundImage: undefined,
+				}
+			}]
+		}
+
 		return (
 			<div ref="brandedslidedeck" style={styles.mainContainer}>
 				{(showSidebar) ? 

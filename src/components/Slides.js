@@ -51,6 +51,7 @@ class Slides extends Component {
 									title={slide.cover.title}
 									subtitle={slide.cover.subtitle}
 									logo={slide.cover.logo}
+									backgroundColor={slide.cover.backgroundColor}
 									backgroundImage={slide.cover.backgroundImage}
 									companyName={companyName}
 									pageNum={i + 1}
