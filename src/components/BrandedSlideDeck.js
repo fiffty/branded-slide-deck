@@ -9,12 +9,15 @@ class BrandedSlideDeck extends Component {
 		super()
 		this.state = {
 			currentSlide: 0,
-			hovered: false
+			hovered: false,
+			showSidebar: false
 		}
 
 		this.goToSlide = this.goToSlide.bind(this)
 		this.handleMouseEnter = this.handleMouseEnter.bind(this)
 		this.handleMouseLeave = this.handleMouseLeave.bind(this)
+		this.toggleSidebar = this.toggleSidebar.bind(this)
+		this.launchFullscreen = this.launchFullscreen.bind(this)
 	}
 	goToSlide(slideIndex) {
 		if (slideIndex < 0 || slideIndex > this.props.slides.length - 1) return;
@@ -32,15 +35,40 @@ class BrandedSlideDeck extends Component {
 			hovered: false
 		})
 	}
+	componentWillMount() {
+		this.setState({
+			showSidebar: this.props.showSidebar
+		})
+	}
+	toggleSidebar() {
+		this.setState({
+			showSidebar: !this.state.showSidebar
+		})
+	}
+	launchFullscreen() {
+		launchIntoFullscreen(this.refs.brandedslidedeck)
+
+		function launchIntoFullscreen(element) {
+		  if(element.requestFullscreen) {
+		    element.requestFullscreen();
+		  } else if(element.mozRequestFullScreen) {
+		    element.mozRequestFullScreen();
+		  } else if(element.webkitRequestFullscreen) {
+		    element.webkitRequestFullscreen();
+		  } else if(element.msRequestFullscreen) {
+		    element.msRequestFullscreen();
+		  }
+		}
+	}
 	render() {
-		const {slides, companyName, showSidebar, canResize} = this.props
-		const {currentSlide, hovered} = this.state
+		const {slides, companyName, canResize} = this.props
+		const {currentSlide, showSidebar, hovered} = this.state
 		const slidesContainerWidth = {
 			width: (showSidebar) ? '80%' : null,
 			left: (showSidebar) ? '20%' : 0
 		}
 		return (
-			<div style={styles.mainContainer}>
+			<div ref="brandedslidedeck" style={styles.mainContainer}>
 				{(showSidebar) ? 
 					<Sidebar canResize={canResize}>
 						<Slides 
@@ -52,11 +80,11 @@ class BrandedSlideDeck extends Component {
 							goToSlide={this.goToSlide} />
 					</Sidebar> 
 				: null}
-				<div 
+				<div
 					style={Object.assign({}, styles.slidesContainer, slidesContainerWidth)}
 					onMouseEnter={this.handleMouseEnter}
 					onMouseLeave={this.handleMouseLeave}>
-					<Slides 
+					<Slides
 						canResize={canResize}
 						slides={slides} 
 						currentSlide={currentSlide} 
@@ -65,6 +93,8 @@ class BrandedSlideDeck extends Component {
 						currentSlide={currentSlide} 
 						numberOfSlides={slides.length} 
 						goToSlide={this.goToSlide}
+						toggleSidebar={this.toggleSidebar}
+						launchFullscreen={this.launchFullscreen}
 						hovered={hovered} />
 				</div>
 			</div>

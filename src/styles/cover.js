@@ -47,7 +47,7 @@ export default {
 	logo: {
 		height: 50,
 		position: 'absolute',
-		left: 100,
+		left: 70,
 		bottom: 30
 	},
 	overlay: {

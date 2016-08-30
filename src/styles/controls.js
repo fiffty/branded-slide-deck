@@ -27,6 +27,10 @@ export default {
 		left: '50%',
 		transform: 'translateX(-50%)'
 	},
+	sidebarBtn: {
+		left: 10,
+		cursor: 'pointer'
+	},
 	prevBtn: {
 		left: 'calc(50% - 50px)',
 		transform: 'translateX(-100%)',
@@ -35,6 +39,10 @@ export default {
 	nextBtn: {
 		left: 'calc(50% + 50px)',
 		cursor: 'pointer'		
+	},
+	fullscreenBtn: {
+		right: 10,
+		cursor: 'pointer'
 	},
 	form: {
 		fontSize: 12,

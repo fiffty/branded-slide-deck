@@ -161,7 +161,7 @@
 	(0, _reactDom.render)(_react2.default.createElement(_BrandedSlideDeck2.default, {
 		slides: slides,
 		companyName: 'BrainStation Inc',
-		showSidebar: true,
+		showSidebar: false,
 		canResize: true }), document.getElementById('app'));
 
 /***/ },
@@ -21565,12 +21565,15 @@
 
 			_this.state = {
 				currentSlide: 0,
-				hovered: false
+				hovered: false,
+				showSidebar: false
 			};
 
 			_this.goToSlide = _this.goToSlide.bind(_this);
 			_this.handleMouseEnter = _this.handleMouseEnter.bind(_this);
 			_this.handleMouseLeave = _this.handleMouseLeave.bind(_this);
+			_this.toggleSidebar = _this.toggleSidebar.bind(_this);
+			_this.launchFullscreen = _this.launchFullscreen.bind(_this);
 			return _this;
 		}
 
@@ -21597,15 +21600,46 @@
 				});
 			}
 		}, {
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				this.setState({
+					showSidebar: this.props.showSidebar
+				});
+			}
+		}, {
+			key: 'toggleSidebar',
+			value: function toggleSidebar() {
+				this.setState({
+					showSidebar: !this.state.showSidebar
+				});
+			}
+		}, {
+			key: 'launchFullscreen',
+			value: function launchFullscreen() {
+				launchIntoFullscreen(this.refs.brandedslidedeck);
+
+				function launchIntoFullscreen(element) {
+					if (element.requestFullscreen) {
+						element.requestFullscreen();
+					} else if (element.mozRequestFullScreen) {
+						element.mozRequestFullScreen();
+					} else if (element.webkitRequestFullscreen) {
+						element.webkitRequestFullscreen();
+					} else if (element.msRequestFullscreen) {
+						element.msRequestFullscreen();
+					}
+				}
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var _props = this.props;
 				var slides = _props.slides;
 				var companyName = _props.companyName;
-				var showSidebar = _props.showSidebar;
 				var canResize = _props.canResize;
 				var _state = this.state;
 				var currentSlide = _state.currentSlide;
+				var showSidebar = _state.showSidebar;
 				var hovered = _state.hovered;
 
 				var slidesContainerWidth = {
@@ -21614,7 +21648,7 @@
 				};
 				return _react2.default.createElement(
 					'div',
-					{ style: _brandedslidedeck2.default.mainContainer },
+					{ ref: 'brandedslidedeck', style: _brandedslidedeck2.default.mainContainer },
 					showSidebar ? _react2.default.createElement(
 						_Sidebar2.default,
 						{ canResize: canResize },
@@ -21641,6 +21675,8 @@
 							currentSlide: currentSlide,
 							numberOfSlides: slides.length,
 							goToSlide: this.goToSlide,
+							toggleSidebar: this.toggleSidebar,
+							launchFullscreen: this.launchFullscreen,
 							hovered: hovered })
 					)
 				);
@@ -21979,7 +22015,7 @@
 		logo: {
 			height: 50,
 			position: 'absolute',
-			left: 100,
+			left: 70,
 			bottom: 30
 		},
 		overlay: {
@@ -22372,6 +22408,8 @@
 				var currentSlide = _props.currentSlide;
 				var numberOfSlides = _props.numberOfSlides;
 				var goToSlide = _props.goToSlide;
+				var toggleSidebar = _props.toggleSidebar;
+				var launchFullscreen = _props.launchFullscreen;
 				var hovered = _props.hovered;
 
 				var expandedStyle = {
@@ -22383,6 +22421,13 @@
 					_react2.default.createElement(
 						'div',
 						{ style: Object.assign({}, _controls2.default.hoverContainer, expandedStyle) },
+						_react2.default.createElement(
+							'span',
+							{
+								style: Object.assign({}, _controls2.default.span, _controls2.default.sidebarBtn),
+								onClick: toggleSidebar },
+							'sidebar'
+						),
 						_react2.default.createElement(
 							'span',
 							{
@@ -22407,6 +22452,13 @@
 									goToSlide(currentSlide + 1);
 								} },
 							'next'
+						),
+						_react2.default.createElement(
+							'span',
+							{
+								style: Object.assign({}, _controls2.default.span, _controls2.default.fullscreenBtn),
+								onClick: launchFullscreen },
+							'fullscreen'
 						)
 					)
 				);
@@ -22417,20 +22469,6 @@
 	}(_react.Component);
 
 	exports.default = Slides;
-	// <form 
-	// 	style={styles.form}
-	// 	onSubmit={(e) => {
-	// 		e.preventDefault()
-	// 		goToSlide(this.refs.input.value - 1)
-	// 	}}>
-	// 	<input 
-	// 		ref="input"
-	// 		style={styles.input}
-	// 		type="number"
-	// 		min="1"
-	// 		max={numberOfSlides}
-	// 		defaultValue={currentSlide + 1} />
-	// </form>
 
 /***/ },
 /* 182 */
@@ -22470,6 +22508,10 @@
 			left: '50%',
 			transform: 'translateX(-50%)'
 		},
+		sidebarBtn: {
+			left: 10,
+			cursor: 'pointer'
+		},
 		prevBtn: {
 			left: 'calc(50% - 50px)',
 			transform: 'translateX(-100%)',
@@ -22477,6 +22519,10 @@
 		},
 		nextBtn: {
 			left: 'calc(50% + 50px)',
+			cursor: 'pointer'
+		},
+		fullscreenBtn: {
+			right: 10,
 			cursor: 'pointer'
 		},
 		form: {
