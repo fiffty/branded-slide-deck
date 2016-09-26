@@ -4,10 +4,6 @@ React Component for presentation slide decks with preset styles
 
 ## Usage
 
-```
-$ npm insall --save branded-slide-deck
-```
-
 ```javascript
 import React from 'react'
 import {render} from 'react-dom'
